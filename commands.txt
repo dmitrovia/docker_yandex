@@ -1,0 +1,14 @@
+cd — меняет текущую папку.
+cd Documents перейдёт в папку Documents.
+ls — показывает файлы и папки в текущей папке.
+ls покажет список файлов и папок.
+mkdir — создаёт новую папку.
+mkdir NewFolder создаст папку NewFolder.
+touch — создаёт новый файл.
+touch newfile.txt создаст файл newfile.txt.
+cp — копирует файлы или папки.
+cp file.txt backup/ скопирует файл file.txt в папку backup.
+mv — перемещает или переименовывает файлы или папки.
+mv oldfile.txt new/ переместит файл oldfile.txt в папку new.
+rm — удаляет файлы или папки.
+rm oldfile.txt удалит файл oldfile.txt.
