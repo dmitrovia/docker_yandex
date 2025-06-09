@@ -1,0 +1,21 @@
+# версия Docker Compose
+version: '3.8'
+
+# Перечень контейнеров
+services:
+  # Имя и описание первого контейнера; имя выбирает разработчик.
+  # Это контейнер Nginx
+  gateway:
+    # Из какого образа запустить контейнер:
+    image: nginx
+    ports:
+      - 80:80
+    # Файл (или список файлов) с переменными окружения
+    # Какой volume подключить для этого контейнера
+    volumes:
+      - ./proxy/nginx-practicum-proxy.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - java-app
+  # Имя и описание контейнера с java приложением
+  java-app:
+    image: demo_web

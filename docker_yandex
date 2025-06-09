@@ -1,0 +1,85 @@
+pwd - путь до файла
+
+docker run имя-образа - Docker создаёт контейнер, в котором запускается ОС и все остальные необходимые программы
+
+docker build -t dock_image . - сборка образа
+docker run --name dock_container -p 8080:8080 dock_image - запуск
+(-p 8080:8080 — публичный порт контейнера. Левая часть — его внешний порт, правая — порт, на который будет перенаправлен запрос внутри приложения.)
+docker container stop <CONTAINER ID> - остановить контейнер
+docker container start <CONTAINER ID> - запустить, остановленный контейнер
+docker restart gateway - перезапуск контейнера
+
+docker image ls - посмотреть все образы
+docker container ls - запущенные контейнеры
+
+docker-compose up - поднять контейнер с помощью конфига
+
+docker rmi -f 7695892cb807 - принудительное удаление
+
+docker network create practicum-network - создать сеть
+
+# Присоединить к сети practicum-network контейнер gateway
+docker network connect practicum-network gateway
+Запустите контейнер с Java-приложением:
+ docker run --name java-app --network practicum-network demo_web
+
+docker volume create secret_volume - создать volume
+
+# Старт контейнера ... связать volume secret_volume
+# c папкой в контейнере /var/lib/postgresql/data 
+ docker run ... -v secret_volume:/var/lib/postgresql/data 
+ 
+- или создаем Файл .env
+POSTGRES_USER=practicum_user
+POSTGRES_PASSWORD=mysecretpassword
+
+ docker run --name local-database --rm \
+     --env-file .env \
+     -v secret_volume:/var/lib/postgresql/data \
+     postgres
+
+- Передача переменных окружения
+# Символ \ в конце строки указывает терминалу, что команда
+# продолжится на следующей строке
+docker run \
+    --name local-database --rm \
+    -e POSTGRES_PASSWORD=mysecretpassword \
+    -e POSTGRES_USER=practicum_user \
+    postgres 
+    
+docker volume rm имя_тома  - удалить том
+    
+- Подключиться через клиент
+ docker exec -it demo_db_1(имя контейнера базы) psql -U root(логин) -d postgres 
+\help — выводит справку по командам;
+\l — выводит список баз данных на сервере;
+\dt — выводит список таблиц в текущей базе данных.
+
+- запуск nginx в контейнере
+docker run --name gateway -p 80:80 \
+ -v ./proxy/nginx-practicum-proxy.conf:/etc/nginx/conf.d/default.conf -d nginx - с конфигом
+ 
+ docker run -d -p 80:80 --name mynginx nginx - дефолт
+ 
+ docker run -d -p 80:80 -v "/home/ivan/DOCKER YANDEX/demo/proxy":/usr/share/nginx/html:ro nginx - примонтировать директорию
+ 
+ ОПИСАНИЕ DOCKER COMPOSE
+В описании контейнера объявляется:
+image — из какого образа создать и запустить контейнер;
+volumes — список подключаемых к контейнеру volumes:
+
+  volumes:
+    - имя_volume:директория_контейнера
+   
+  Другой распространённый вариант — просто указать директорию контейнера, для которой будет создан volume:
+
+  volumes:
+    - директория_контейнера
+   
+  Такой volume называется анонимным volume (у него не будет имени), его не нужно описывать в общем блоке volumes. 
+  Ещё один способ, когда необходимо синхронизировать папку на хосте с папкой внутри контейнера:
+
+  volumes:
+    - директория_хоста:директория_контейнера
+   
+  При таком способе изменения на хосте сразу попадут внутрь контейнера. И наоборот. 
